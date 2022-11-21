@@ -13,8 +13,8 @@ Mariana	- CP3016625
 
 - [Arquivo de dados (Datasets)](https://github.com/o-guilherme/IFSP-Proj-Sem2/tree/main/datasets)
 - Notebooks:
-  - (Análise exploratória e pré-processamento)[https://github.com/o-guilherme/IFSP-Proj-Sem2/blob/main/SageMaker%20An%C3%A1lise%20Explorat%C3%B3ria%20e%20Pr%C3%A9-processamento.ipynb]
-  - (Treinamento do modelo e comparações)[https://github.com/o-guilherme/IFSP-Proj-Sem2/blob/main/SageMaker%20Treinamento%20dos%20modelos.ipynb]
+  - Análise exploratória e pré-processamento)
+  - Treinamento do modelo e comparações
 - Diagrama do deploy na AWS
 - Apresentação
 
