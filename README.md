@@ -81,22 +81,11 @@ A implementação da solução foi feita seguindo esses passos:
 
 <img src="./imgs/processo.png" alt="Processo de implementação" title="Processo de implementação" width="50%" height="50%">
 
-## 3.2 Deploy da estrutura na AWS
+## 3.2 Setup da estrutura na AWS
 
 Para implementar os passos acima, foram utilizados os recursos da AWS seguindo o seguinte *workflow*:
 
 <img src="./imgs/deploy.png" alt="Estrutura AWS" title="Estrutura AWS" width="80%" height="80%">
-
-O processo pode ser resumido assim:
-* Dados do Kaggle foram carregados no repositório do GitHub;
-* A instância '*EDA-and-Pre-Processing-Sagemaker*' foi utilizada para rodar o arquivo '*SageMaker_Analise_Exploratoria_e_Pre-processamento.ipynb*';
-* Referida instância carrega os dados brutos armazenados no GitHub e os armazena no bucket designado para o projeto, qual seja, '*trabalho-ifsp-campinas-interdisciplinar-2022-2*';
-* O notebook também gera outras cópias transformadas que são armazenadas no mesmo bucket;
-* Essa instância é encerrada e incia-se a outra instância do Sagemaker, a '*Sagemaker-Models*', a qual roda o arquivo '*SageMaker_Treinamento_dos_modelos.ipynb*';
-* Esse notebook treina vários modelos e os compara;
-* Esse notebook também treina o modelo XGBoost hospedado na AWS;
-* Em sequência, é criado o endpoint do SageMaker, com os dados armazenado no diretório do bucket;
-* Esses dados armazenados são chamados para o modelo realizar as predições.
 
 Como se observa, foram criados dois jupyter notebooks para realizar as atividades.
 
@@ -112,37 +101,76 @@ Ambos os notebooks são vinculados com o repositório do GitHub:
 
 <img src="./imgs/Link-GitHub.png" alt="Link GitHub" title="Link GitHub">
 
+## 3.3 Pipeline dos dados
+
+O pipeline do projeto pode ser resumido assim:
+
+* Dados do Kaggle foram carregados no repositório do GitHub;
+* A instância '*EDA-and-Pre-Processing-Sagemaker*' foi utilizada para rodar o arquivo '*SageMaker_Analise_Exploratoria_e_Pre-processamento.ipynb*';
+* Referida instância carrega os dados brutos armazenados no GitHub e os armazena no bucket designado para o projeto, qual seja, '*trabalho-ifsp-campinas-interdisciplinar-2022-2*';
+* O notebook também gera outras cópias transformadas que são armazenadas no mesmo bucket;
+* Essa instância é encerrada e incia-se a outra instância do Sagemaker, a '*Sagemaker-Models*', a qual roda o arquivo '*SageMaker_Treinamento_dos_modelos.ipynb*';
+* Esse notebook treina vários modelos e os compara;
+* Esse notebook também treina o modelo XGBoost hospedado na AWS;
+* Em sequência, é criado o endpoint do SageMaker, com os dados armazenado no diretório do bucket;
+* Esses dados armazenados são chamados para o modelo realizar as predições.
+
+Os passos individuais foram descritos diretamente nos notebooks.
+
+# 4 Análise exploratória e pré-processamento
+
+Descrita no notebook [SageMaker_Analise_Exploratoria_e_Pre-processamento.ipynb](SageMaker_Analise_Exploratoria_e_Pre-processamento.ipynb)
+
+# 5 Treinamento dos modelo
+
+Descrito no notebook [SageMaker_Treinamento_dos_modelos.ipynb](SageMaker_Treinamento_dos_modelos.ipynb)
+
+# 6 Criação de endpoint na AWS
+
+Esses passo também constam no notebook [SageMaker_Treinamento_dos_modelos.ipynb](SageMaker_Treinamento_dos_modelos.ipynb), mas a estrutura utilizada comporta relato aqui.
+
+Após o treinamento dos modelos offline no notebook, foi criado trabalho de treinamento novo para preparar o modelo:
+
+<img src="./imgs/training-job.png" alt="Tarefa de treinamento" title="Tarefa de treinamento">
+
+Esse trabalho de treinamento gerou o modelo:
+
+<img src="./imgs/model.png" alt="Modelo criado" title="Modelo criado">
+
+Que pôde ser chamado pelo endpoint para realizar um trabalho de predição:
+
+<img src="./imgs/processing-job.png" alt="Tarefa de predição" title="Tarefa de predição">
+
+Após a predição, o endpoint foi feito o clean up para não incorrer em custos, usando o seguinte comando:
+
+```xgb_predictor.delete_endpoint(delete_endpoint_config=True)```
+
+Encerrado o endpoint, também foi chamada uma tarefa de processamento em lotes, a qual foi concluída com êxito:
+
+<img src="./imgs/batch-job.png" alt="Tarefa em lotes" title="Tarefa em lotes">
+
+Essa última tarefa não necessitou de exclusão posterior pois não gera endpoint.
+
+# 7 Conclusão
+
+Após realizada a tarefa e os treinamentos, foi obtia a comparação entre os modelos e técnicas de processamento, objetivo do presente trabalho.
+
+Foram examinados os seguintes modelos para obter a melhor combinação entre modelo e técnica de processamento possível:
+
+<img src="./imgs/datasets%20training.PNG" alt="Comparação transformação X modelo" title="Comparação transformação X modelo">
+
+Desses modelos, foi realizada a grid-search e melhoria dos hiperparâmetros, que apresentou o seguinte resultado:
+
+<img src="./imgs/model%20comparison.png" alt="Comparação modelos ajustados" title="Comparação modelos ajustados">
+
+E ao final, foi extraído o mapa de importância das features, em específico a do modelo extra trees:
+
+<img src="./imgs/feature-importance.png" alt="Importância das features" title="Importância das features">
+
+Esse último gráfico mostra os principais fatores relevantes para que a pessoa conclua ou não o pedido de plano de saúde.
+
+Observa-se que os fatores mais decisivos são: Preço do plano, seguido da idade do possível e cliente e em terceiro, pelo prazo do plano de saúde ofereicdo ('Holding_Policy_Duration').
+
+Essa informação é a mais relevante para fins de marketing e estratégia empresarial e foi possível ser obtida para utilizando os modelos treinados no projeto.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Artefatos:
-
-- [Arquivo de dados (Datasets)](https://github.com/o-guilherme/IFSP-Proj-Sem2/tree/main/datasets)
-- Notebooks:
-  - Análise exploratória e pré-processamento)
-  - Treinamento do modelo e comparações
-- Diagrama do deploy na AWS
-- Apresentação
-
----
