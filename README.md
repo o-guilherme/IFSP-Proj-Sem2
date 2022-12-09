@@ -79,6 +79,50 @@ Referidos passos estão descritos no [notebook da análise exploratória e pré-
 
 A implementação da solução foi feita seguindo esses passos:
 
+<img src="./imgs/processo.png" alt="Processo de implementação" title="Processo de implementação" width="50%" height="50%">
+
+## 3.2 Deploy da estrutura na AWS
+
+Para implementar os passos acima, foram utilizados os recursos da AWS seguindo o seguinte *workflow*:
+
+<img src="./imgs/deploy.png" alt="Estrutura AWS" title="Estrutura AWS" width="80%" height="80%">
+
+O processo pode ser resumido assim:
+* Dados do Kaggle foram carregados no repositório do GitHub;
+* A instância '*EDA-and-Pre-Processing-Sagemaker*' foi utilizada para rodar o arquivo '*SageMaker_Analise_Exploratoria_e_Pre-processamento.ipynb*';
+* Referida instância carrega os dados brutos armazenados no GitHub e os armazena no bucket designado para o projeto, qual seja, '*trabalho-ifsp-campinas-interdisciplinar-2022-2*';
+* O notebook também gera outras cópias transformadas que são armazenadas no mesmo bucket;
+* Essa instância é encerrada e incia-se a outra instância do Sagemaker, a '*Sagemaker-Models*', a qual roda o arquivo '*SageMaker_Treinamento_dos_modelos.ipynb*';
+* Esse notebook treina vários modelos e os compara;
+* Esse notebook também treina o modelo XGBoost hospedado na AWS;
+* Em sequência, é criado o endpoint do SageMaker, com os dados armazenado no diretório do bucket;
+* Esses dados armazenados são chamados para o modelo realizar as predições.
+
+Como se observa, foram criados dois jupyter notebooks para realizar as atividades.
+
+A razão disso é que o notebook para análise exploratória, para diminuir o custo de uso, foi instanciado em máquina menor, usando o *ml.t2.medium*, com armazenamento na Elastic Block Store (EBS) de apenas 5GB, como se vê:
+
+<img src="./imgs/Notebook1.PNG" alt="Notebook 1" title="Notebook 1" width="80%" height="80%">
+
+Já o segundo notebook, por realizar treinamento de modelos, foi instanciado na maior máquina disponível para o trabalho, qual seja, *ml.t3.xlarge*, com armazenamento maior de 16 GB na EBS, como se vê:
+
+<img src="./imgs/Notebook2.PNG" alt="Notebook 2" title="Notebook 2" width="80%" height="80%">
+
+Ambos os notebooks são vinculados com o repositório do GitHub:
+
+<img src="./imgs/Link-GitHub.png" alt="Link GitHub" title="Link GitHub">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
