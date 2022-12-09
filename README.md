@@ -73,7 +73,14 @@ Como um dos objetivos do trabalho era explorar formas de transformação dos dad
 
 Referidos passos estão descritos no [notebook da análise exploratória e pré-processamento](./SageMaker_Analise_Exploratoria_e_Pre-processamento.ipynb).
 
-## 2.3 
+# 3 Organização da solução
+
+## 3.1 Processo de implementação
+
+A implementação da solução foi feita seguindo esses passos:
+
+
+
 
 
 
